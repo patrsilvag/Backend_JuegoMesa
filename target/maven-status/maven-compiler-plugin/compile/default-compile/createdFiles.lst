@@ -1,0 +1,13 @@
+tareas\backend\repository\JuegoRepository.class
+tareas\backend\repository\UsuarioRepository.class
+tareas\backend\repository\CategoriaRepository.class
+tareas\backend\controller\UsuarioController.class
+tareas\backend\entity\Usuario.class
+tareas\backend\JuegosMesaApplication.class
+tareas\backend\entity\Juego.class
+tareas\backend\controller\JuegoController.class
+tareas\backend\entity\Categoria.class
+tareas\backend\controller\CategoriaController.class
+tareas\backend\service\CategoriaService.class
+tareas\backend\service\JuegoService.class
+tareas\backend\service\UsuarioService.class
