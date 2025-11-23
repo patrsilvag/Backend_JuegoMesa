@@ -34,14 +34,34 @@ public class CategoriaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Categoria> update(@NonNull @PathVariable Long id, @RequestBody Categoria c) {
+    public ResponseEntity<Categoria> update(@PathVariable Long id, @RequestBody Categoria c) {
         return service.findById(id)
-                .map(existing -> ResponseEntity.ok(service.save(c)))
+                .map(existing -> {
+                    c.setIdCategoria(id);
+
+                    if (c.getNombre() == null)
+                        c.setNombre(existing.getNombre());
+                    if (c.getTitulo() == null)
+                        c.setTitulo(existing.getTitulo());
+                    if (c.getSubtitulo() == null)
+                        c.setSubtitulo(existing.getSubtitulo());
+                    if (c.getImagen() == null)
+                        c.setImagen(existing.getImagen());
+
+                    return ResponseEntity.ok(service.save(c));
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@NonNull @PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+
+        if (service.findById(id).isEmpty()) {
+            return ResponseEntity.notFound().build(); // 404
+        }
+
         service.deleteById(id);
+        return ResponseEntity.noContent().build(); // 204
     }
+
 }

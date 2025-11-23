@@ -35,7 +35,29 @@ public class UsuarioController {
     @PutMapping("/{id}")
     public ResponseEntity<Usuario> update(@PathVariable String id, @RequestBody Usuario u) {
         return service.findById(id)
-                .map(existing -> ResponseEntity.ok(service.save(u)))
+                .map(existing -> {
+
+                    // ✅ siempre mantener el ID original
+                    u.setCorreo(id);
+
+                    // ✅ merge campo a campo si viene null
+                    if (u.getNombre() == null)
+                        u.setNombre(existing.getNombre());
+                    if (u.getUsuario() == null)
+                        u.setUsuario(existing.getUsuario());
+                    if (u.getClave() == null)
+                        u.setClave(existing.getClave());
+                    if (u.getRol() == null)
+                        u.setRol(existing.getRol());
+                    if (u.getDireccion() == null)
+                        u.setDireccion(existing.getDireccion());
+                    if (u.getFechaNacimiento() == null)
+                        u.setFechaNacimiento(existing.getFechaNacimiento());
+                    if (u.getEstado() == null)
+                        u.setEstado(existing.getEstado());
+
+                    return ResponseEntity.ok(service.save(u));
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 
