@@ -15,15 +15,17 @@ public class Usuario {
     private String correo;
 
     @NotBlank
+    @Size(min = 3, max = 100)
     @Column(name = "nombre", nullable = false)
     private String nombre;
 
     @NotBlank
+    @Size(min = 3, max = 50)
     @Column(name = "usuario", nullable = false)
     private String usuario;
 
     @NotBlank
-    @Size(min = 6)
+    @Size(min = 6, max = 18)
     @Column(name = "clave", nullable = false)
     private String clave;
 
@@ -35,6 +37,7 @@ public class Usuario {
 
     // ✅ opcional / nullable
     @Column(name = "direccion", nullable = true)
+    @Size(max = 255)
     private String direccion;
 
     @NotNull

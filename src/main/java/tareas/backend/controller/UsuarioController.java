@@ -33,10 +33,14 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> create(@Valid @RequestBody Usuario u) {
+    public ResponseEntity<?> create(@Valid @RequestBody Usuario u) {
+        if (service.existsById(u.getCorreo())) {
+            // 409 Conflict: ya existe
+            return ResponseEntity.status(409).build();
+            // si quieres body: .body("USUARIO_YA_EXISTE")
+        }
         Usuario creado = service.save(u);
-        // REST estricto sería 201, pero mantengo tu patrón 200
-        return ResponseEntity.ok(creado);
+        return ResponseEntity.ok(creado); // o 201 si quieres REST estricto
     }
 
     @PutMapping("/{id}")
