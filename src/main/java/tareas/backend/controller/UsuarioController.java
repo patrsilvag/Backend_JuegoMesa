@@ -1,19 +1,24 @@
 package tareas.backend.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import tareas.backend.entity.Usuario;
 import tareas.backend.service.UsuarioService;
+
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/usuarios")
+@CrossOrigin(origins = "http://localhost:4200") 
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioService service;
+    private final UsuarioService service;
+
+    public UsuarioController(UsuarioService service) {
+        this.service = service;
+    }
 
     @GetMapping
     public List<Usuario> getAll() {
@@ -28,34 +33,17 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public Usuario create(@RequestBody Usuario u) {
-        return service.save(u);
+    public ResponseEntity<Usuario> create(@Valid @RequestBody Usuario u) {
+        Usuario creado = service.save(u);
+        // REST estricto sería 201, pero mantengo tu patrón 200
+        return ResponseEntity.ok(creado);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> update(@PathVariable String id, @RequestBody Usuario u) {
+    public ResponseEntity<Usuario> update(@PathVariable String id, @Valid @RequestBody Usuario u) {
         return service.findById(id)
                 .map(existing -> {
-
-                    // ✅ siempre mantener el ID original
-                    u.setCorreo(id);
-
-                    // ✅ merge campo a campo si viene null
-                    if (u.getNombre() == null)
-                        u.setNombre(existing.getNombre());
-                    if (u.getUsuario() == null)
-                        u.setUsuario(existing.getUsuario());
-                    if (u.getClave() == null)
-                        u.setClave(existing.getClave());
-                    if (u.getRol() == null)
-                        u.setRol(existing.getRol());
-                    if (u.getDireccion() == null)
-                        u.setDireccion(existing.getDireccion());
-                    if (u.getFechaNacimiento() == null)
-                        u.setFechaNacimiento(existing.getFechaNacimiento());
-                    if (u.getEstado() == null)
-                        u.setEstado(existing.getEstado());
-
+                    u.setCorreo(id); // amarra ID al path
                     return ResponseEntity.ok(service.save(u));
                 })
                 .orElse(ResponseEntity.notFound().build());
@@ -63,11 +51,10 @@ public class UsuarioController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
-        return service.findById(id)
-                .map(u -> {
-                    service.deleteById(id);
-                    return ResponseEntity.noContent().<Void>build();
-                })
-                .orElse(ResponseEntity.notFound().build());
+        if (!service.existsById(id)) {
+            return ResponseEntity.notFound().build(); // 404
+        }
+        service.deleteById(id);
+        return ResponseEntity.noContent().build(); // 204
     }
 }

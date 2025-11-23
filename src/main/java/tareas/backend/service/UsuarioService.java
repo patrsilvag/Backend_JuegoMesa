@@ -1,10 +1,8 @@
 package tareas.backend.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Service;
 import tareas.backend.entity.Usuario;
 import tareas.backend.repository.UsuarioRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,22 +10,29 @@ import java.util.Optional;
 @Service
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository repository;
+    private final UsuarioRepository repository;
+
+    public UsuarioService(UsuarioRepository repository) {
+        this.repository = repository;
+    }
 
     public List<Usuario> findAll() {
         return repository.findAll();
     }
 
-    public Optional<Usuario> findById(@NonNull String id) {
-        return repository.findById(id);
+    public Optional<Usuario> findById(String correo) {
+        return repository.findById(correo);
     }
 
-    public Usuario save(@NonNull Usuario u) {
+    public Usuario save(Usuario u) {
         return repository.save(u);
     }
 
-    public void deleteById(@NonNull String id) {
-        repository.deleteById(id);
+    public void deleteById(String correo) {
+        repository.deleteById(correo);
+    }
+
+    public boolean existsById(String correo) {
+        return repository.existsById(correo);
     }
 }

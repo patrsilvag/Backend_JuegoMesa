@@ -5,34 +5,49 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 
 @Entity
+@Table(name = "usuario") 
 public class Usuario {
+
     @Id
     @Email
     @NotBlank
+    @Column(name = "correo", nullable = false, unique = true)
     private String correo;
 
     @NotBlank
+    @Column(name = "nombre", nullable = false)
     private String nombre;
 
     @NotBlank
+    @Column(name = "usuario", nullable = false)
     private String usuario;
 
     @NotBlank
     @Size(min = 6)
+    @Column(name = "clave", nullable = false)
     private String clave;
 
-    @NotBlank
-    @Pattern(regexp = "admin|cliente")
-    private String rol;
+    // ✅ rol como enum restringido (admin/cliente)
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "rol", nullable = false)
+    private Rol rol;
 
+    // ✅ opcional / nullable
+    @Column(name = "direccion", nullable = true)
     private String direccion;
 
     @NotNull
+    @Column(name = "fecha_nacimiento", nullable = false)
     private LocalDate fechaNacimiento;
 
-    private String estado;
+    // ✅ "status" 
+    @NotBlank
+    @Pattern(regexp = "active|inactive")
+    @Column(name = "status", nullable = false)
+    private String status = "active";
 
-    // Getters y Setters
+    // ===== Getters y setters =====
 
     public String getCorreo() {
         return correo;
@@ -66,11 +81,11 @@ public class Usuario {
         this.clave = clave;
     }
 
-    public String getRol() {
+    public Rol getRol() {
         return rol;
     }
 
-    public void setRol(String rol) {
+    public void setRol(Rol rol) {
         this.rol = rol;
     }
 
@@ -90,11 +105,11 @@ public class Usuario {
         this.fechaNacimiento = fechaNacimiento;
     }
 
-    public String getEstado() {
-        return estado;
+    public String getStatus() {
+        return status;
     }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
