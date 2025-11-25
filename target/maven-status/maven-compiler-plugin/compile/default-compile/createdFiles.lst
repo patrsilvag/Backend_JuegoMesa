@@ -10,4 +10,5 @@ tareas\backend\entity\Categoria.class
 tareas\backend\controller\CategoriaController.class
 tareas\backend\service\CategoriaService.class
 tareas\backend\service\JuegoService.class
+tareas\backend\entity\Rol.class
 tareas\backend\service\UsuarioService.class
